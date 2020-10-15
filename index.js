@@ -20,7 +20,7 @@ function getType(schemaType) {
     }
 }
 
-function filterObjectOnSchema(schema, doc) {
+function filterObjectOnSchema(schema, doc, detach) {
     var result;  // returns the resulting filtered thing from this level; can be object, array, literal, ...
 
     // if the document is null/undefined, short-circuit and return it
@@ -38,7 +38,7 @@ function filterObjectOnSchema(schema, doc) {
             var child = doc[key];
             var sp = schema.properties[key];
 
-            var filteredChild = filterObjectOnSchema(sp, child);
+            var filteredChild = filterObjectOnSchema(sp, child, detach);
 
             // filter out if the child is undefined
             if (filteredChild === undefined) {
@@ -48,11 +48,13 @@ function filterObjectOnSchema(schema, doc) {
             // keep the child if it's defined properly or null
             result[key] = filteredChild;
         });
+    } else if (type === 'object' && isObject(doc) && detach) {
+        return {};
     } else if (type === 'array' && Array.isArray(doc) && schema.items) {
         // check that the doc is also an array
         result = [];
         doc.forEach(function(item) {
-            result.push(filterObjectOnSchema(schema.items, item));
+            result.push(filterObjectOnSchema(schema.items, item, detach));
         })
     } else {  // literals, or if object/array schema def. vs real thing doesn't match
         result = doc;

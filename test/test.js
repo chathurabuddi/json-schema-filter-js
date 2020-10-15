@@ -2,7 +2,7 @@ var expect = require('chai').expect;
 var filter = require('../index.js');
 
 
-describe('json-schema-filter', function(){
+describe('json-schema-filter-js', function(){
 
   var schema = {
     "title": "Example Schema",
@@ -86,7 +86,7 @@ describe('json-schema-filter', function(){
   };
 
 
-  it('filters the docuemnt with no exclusions', function(){
+  it('filters the document with no exclusions', function(){
 
     var document = {
       firstName: 'Andrew',
@@ -158,6 +158,31 @@ describe('json-schema-filter', function(){
 
     expect(result).to.eql(document)
   });
+
+  it('detach free form objects when detachFreeForm is true', function(){
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      general: {hobbies: ['cylcing', 'jogging', 'death'], drinking_abilities: 'professional'}
+    }
+
+    var result = filter(schema, document, true);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: {}});
+  });
+
+  it('detach free form objects when detachFreeForm is true, even for empty objects', function(){
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      general: {}
+    }
+
+    var result = filter(schema, document, true);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: {}});
+  });
+
   it('filters array literals', function(){
     var document = {
       firstName: 'Andrew',
