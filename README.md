@@ -1,4 +1,4 @@
-#json-schema-filter-js
+# json-schema-filter-js
 
 Filters (removes) objects recursively from document based on passed json-schema
 
@@ -12,12 +12,10 @@ For performance reasons it is assumed that the json-schema contains less items t
 $ npm install json-schema-filter-js
 ```
 
-### Usage...
+### Usage
 
 ```javascript
-
 var filter = require('json-schema-filter-js');
-
 var schema = {
     "title": "Example Schema",
     "type": "object",
@@ -63,14 +61,11 @@ var schema = {
     },
     "required": ["firstName", "lastName"]
 };
-
 var document = {firstName: 'John', lastName: 'Dow!', shouldNot: 'see this!'};
-
 var results = filter(schema, document);   
+console.log(results);
 
-console.log(results);  // # {firstName: 'John', lastName: 'Dow!'}
-
-// Works on nested objects and arrays as well...
+// Works on nested objects and arrays as well.
 var document2 = {
     firstName: 'Johnny',
     lastName: 'Dowsky',
@@ -80,16 +75,12 @@ var document2 = {
     ]
 }
 var nestedResults = filter(schema, document2);
-
-console.log(nestedResults);  // # {firstName: 'Johnny', lastName: 'Dowski', contacts: [{phone: '303943', phone: '399494'}]}
-
-
+console.log(nestedResults); 
 ```
 
+
 ### Notes:
-
 #### "object" without "properties" or free form objects
-
 If a ```"type": "object"``` with no ```"property":``` is defined (see 'general:' in above example), or empty, the entire object is removed from the results. It could be that you require it to be included but empty, but to the best of my knowledge I thought it would be cleaner to simply remove it if empty. Else it copies everything over, as in all of what is in the properties of the key.
 
 Background info: The lack of ```property``` is legal in json-schema and means anything goes, or what I refer to as free-form.. free-style.. oh well, pick your meaning for it, it has the word 'free'!
